@@ -739,42 +739,48 @@
 
         // قاعدة بيانات محلية بسيطة لحفظ بيانات العملاء
         const customerDatabase = {
-            data: {},
-            
-            // حفظ بيانات العميل
-            save: function(customerData) {
-                this.data.customer = {
-                    name: customerData.name,
-                    phone: customerData.phone,
-                    building: customerData.building,
-                    apartment: customerData.apartment,
-                    savedAt: new Date().toISOString()
-                };
-                console.log('تم حفظ البيانات في قاعدة البيانات:', this.data.customer);
-                return true;
-            },
-            
-            // استرجاع بيانات العميل
-            load: function() {
-                if (this.data.customer) {
-                    console.log('تم استرجاع البيانات من قاعدة البيانات:', this.data.customer);
-                    return this.data.customer;
-                }
-                console.log('لا توجد بيانات محفوظة في قاعدة البيانات');
-                return null;
-            },
-            
-            // حذف بيانات العميل
-            clear: function() {
-                this.data.customer = null;
-                console.log('تم حذف البيانات من قاعدة البيانات');
-            },
-            
-            // التحقق من وجود بيانات
-            exists: function() {
-                return this.data.customer !== null && this.data.customer !== undefined;
-            }
+    // حفظ بيانات العميل في localStorage
+    save: function(customerData) {
+        const dataToSave = {
+            name: customerData.name,
+            phone: customerData.phone,
+            building: customerData.building,
+            apartment: customerData.apartment,
+            savedAt: new Date().toISOString()
         };
+        localStorage.setItem('freshFruitsCustomerData', JSON.stringify(dataToSave));
+        console.log('تم حفظ بيانات العميل في localStorage:', dataToSave);
+        return true;
+    },
+
+    // استرجاع بيانات العميل من localStorage
+    load: function() {
+        const savedData = localStorage.getItem('freshFruitsCustomerData');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                console.log('تم استرجاع بيانات العميل من localStorage:', parsed);
+                return parsed;
+            } catch (e) {
+                console.error('خطأ في قراءة البيانات من localStorage:', e);
+                return null;
+            }
+        }
+        console.log('لا توجد بيانات محفوظة في localStorage');
+        return null;
+    },
+
+    // حذف بيانات العميل من localStorage
+    clear: function() {
+        localStorage.removeItem('freshFruitsCustomerData');
+        console.log('تم حذف بيانات العميل من localStorage');
+    },
+
+    // التحقق من وجود بيانات
+    exists: function() {
+        return this.load() !== null;
+    }
+};
 
         // متغير العميل الحالي
         let customerData = null;
@@ -1103,7 +1109,7 @@
     orderText += `%0A%0Aشكرًا على طلبك! سيتم التوصيل في أسرع وقت.`;
 
     // رقم الواتساب (يجب أن يكون بدون مسافات أو رموز)
-    const whatsappNumber = '201018688494';
+    const whatsappNumber = '00201018688494';
 
     // إنشاء رابط واتساب
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${orderText}`;
@@ -1247,6 +1253,4 @@
         };
     </script>
 </body>
-
 </html>
-
