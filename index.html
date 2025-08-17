@@ -631,7 +631,7 @@
         </div>
     </div>
     <script>
-        // Google Sheets API configuration
+        // Google Sheets API configuration (لقراءة بيانات الفواكه فقط)
         const apiKey = 'AIzaSyBh82Bqe-FfnZdzjGSVwmrpdKiURhhHaZ4';
         const sheetId = '1Vn9sSmLbbMvZ9lJO1HxhuU4v1Sjs7Hs7jOlZT2c-9ms';
         const sheetName = 'veg';
@@ -682,17 +682,17 @@
         let quantities = {};
         let prices = {};
 
-        // دالة إرسال الطلب إلى Google Sheets (ورقة vegO)
+        // دالة لإرسال الطلب إلى Google Sheets عبر Google Apps Script
         async function sendOrderToGoogleSheets(orderData) {
-            const sheetName = 'vegO';
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}:append?valueInputOption=USER_ENTERED&key=${apiKey}`;
+            // 🔥 رابط Google Apps Script (Webhook)
+            const webhookUrl = 'https://script.google.com/macros/s/AKfycbwVdweWG6kOJzHm4aAO_wR97VCrXY6MbAz1v4KDjvHjQh0iGZLf8vdQU8PMJsoYSYs-BQ/exec';
 
             const body = {
                 values: [orderData]
             };
 
             try {
-                const response = await fetch(url, {
+                const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -701,25 +701,25 @@
                 });
 
                 const result = await response.json();
-                if (response.ok) {
-                    console.log('✅ تم إرسال الطلب إلى Google Sheets:', result);
+                if (response.ok && result.success) {
+                    console.log('✅ تم حفظ الطلب في Google Sheets:', result);
                     return true;
                 } else {
-                    console.error('❌ خطأ من Google Sheets:', result);
-                    alert('تم إرسال الطلب، لكن لم يتم حفظه في قاعدة البيانات.');
+                    console.error('❌ خطأ من Google Apps Script:', result.error || result);
+                    alert('تم إرسال الطلب، لكن لم يتم حفظه في قاعدة البيانات. تواصل مع الدعم.');
                     return false;
                 }
             } catch (error) {
-                console.error('❌ خطأ في الاتصال بـ Google Sheets:', error);
+                console.error('❌ خطأ في الاتصال بـ Google Apps Script:', error);
                 alert('تعذر الاتصال بجوجل. تحقق من الإنترنت.');
                 return false;
             }
         }
 
-        // وظيفة لجلب البيانات من Google Sheets
+        // وظيفة لجلب البيانات من Google Sheets (للفواكه فقط)
         async function fetchFruitsData() {
             try {
-                console.log('جاري تحميل البيانات من Google Sheets...');
+                console.log('جاري تحميل بيانات الفواكه من Google Sheets...');
                 const response = await fetch(endpoint);
                 const data = await response.json();
                 if (data.values && data.values.length > 1) {
@@ -743,7 +743,7 @@
                             prices[fruitId] = fruitPrice;
                         }
                     }
-                    console.log('تم تحميل البيانات بنجاح:', fruitsData);
+                    console.log('تم تحميل بيانات الفواكه بنجاح:', fruitsData);
                     createFruitsTable();
                     updateTotal();
                 } else {
@@ -1002,16 +1002,21 @@
             ];
 
             if (confirm('هل أنت متأكد من تأكيد هذا الطلب؟')) {
-                // إرسال إلى جوجل شيتس أولًا
+                // أولًا: إرسال إلى جوجل شيتس
                 sendOrderToGoogleSheets(orderRow).then(success => {
-                    // ثم فتح واتساب
+                    // ثانيًا: فتح واتساب
                     window.open(whatsappURL, '_blank');
+
                     // إعادة تعيين السلة
                     for (let fruit in quantities) {
                         quantities[fruit] = 0;
                     }
                     updateTotal();
-                    setTimeout(() => goToMainPage(), 1000);
+
+                    // العودة للصفحة الرئيسية
+                    setTimeout(() => {
+                        goToMainPage();
+                    }, 1000);
                 });
             }
         }
