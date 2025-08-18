@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الفواكه الطازجة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2d5a27;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .header-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        .header-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .welcome-section {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .fruit-table-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+        .fruit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        .fruit-table th {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .fruit-table th:first-child {
+            border-radius: 15px 0 0 0;
+        }
+        .fruit-table th:last-child {
+            border-radius: 0 15px 0 0;
+        }
+        .fruit-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+        .fruit-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .fruit-emoji {
+            font-size: 2rem;
+        }
+        .price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+        .quantity-display {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            background: #f5f5f5;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            min-width: 80px;
+        }
+        .subtotal-display {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d5a27;
+            background: #e8f5e8;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            min-width: 80px;
+        }
+        .quantity-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        .qty-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF5252);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+        .qty-btn.plus {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+        }
+        .qty-btn:hover {
+            transform: scale(1.1);
+        }
+        .qty-btn:active {
+            transform: scale(0.95);
+        }
+        .total-section {
+            background: linear-gradient(45deg, #2d5a27, #4CAF50);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .total-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .order-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF5252);
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
+        }
+        .order-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+        }
+        .order-btn:active {
+            transform: translateY(0);
+        }
+        .promo-section {
+            background: rgba(255, 193, 7, 0.9);
+            color: #333;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        .promo-section h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+        .order-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .order-summary-table th {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .order-summary-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.1rem;
+        }
+        .order-summary-table tr:last-child td {
+            border-bottom: none;
+        }
+        .back-btn {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            margin-bottom: 2rem;
+        }
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+        .confirm-order-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(40, 167, 69, 0.4);
+        }
+        .confirm-order-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(40, 167, 69, 0.5);
+        }
+        .empty-cart {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            margin: 3rem 0;
+        }
+        .customer-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .save-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            margin-bottom: 1rem;
+        }
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+        .success-message {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-btn {
+            background: linear-gradient(45deg, #FFD700, #FF6B35);
+            color: #333;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            animation: flash 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .flash-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+            animation: none;
+        }
+        .flash-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes flash {
+            0%, 100% { 
+                background: linear-gradient(45deg, #FFD700, #FF6B35);
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            }
+            50% { 
+                background: linear-gradient(45deg, #FF6B35, #FFD700);
+                box-shadow: 0 4px 20px rgba(255, 107, 53, 0.6);
+                transform: scale(1.02);
+            }
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .why-us-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        .why-us-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.5s ease-out;
+        }
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-modal {
+            color: white;
+            float: left;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .close-modal:hover {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+        .why-us-item {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .why-us-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .why-us-item h3 {
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+            .fruit-table-container {
+                padding: 1rem;
+            }
+            .fruit-table th,
+            .fruit-table td {
+                padding: 0.7rem 0.3rem;
+                font-size: 0.9rem;
+            }
+            .fruit-item {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+            .fruit-emoji {
+                font-size: 1.5rem;
+            }
+            .quantity-controls {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            .qty-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            🍎 متجر الفواكه الطازجة
+        </div>
+        <div class="header-buttons" id="headerButtons">
+            <button class="flash-btn" onclick="showWhyUs()">⭐ ليه تشتري من عندنا؟</button>
+            <button class="header-btn" onclick="showOrders()">طلباتي</button>
+            <button class="header-btn" onclick="showCustomerData()">بيانات العميل</button>
+        </div>
+    </div>
+    <!-- نافذة "ليه تشتري من عندنا" -->
+    <div id="whyUsModal" class="why-us-modal">
+        <div class="why-us-content">
+            <span class="close-modal" onclick="closeWhyUs()">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #FFD700;">⭐ ليه تشتري من عندنا؟</h2>
+            <div class="why-us-item">
+                <h3>🍎 جودة عالية</h3>
+                <p>نختار لك أجود أنواع الفواكه الطازجة من مصادر موثوقة</p>
+            </div>
+            <div class="why-us-item">
+                <h3>🚚 توصيل سريع</h3>
+                <p>خدمة توصيل في نفس اليوم إلى باب البيت</p>
+            </div>
+            <div class="why-us-item">
+                <h3>💰 أسعار منافسة</h3>
+                <p>أفضل الأسعار في السوق مع عروض وخصومات مستمرة</p>
+            </div>
+            <div class="why-us-item">
+                <h3>🎯 خدمة عملاء ممتازة</h3>
+                <p>فريق دعم متاح 24/7 لخدمتك وحل أي مشكلة</p>
+            </div>
+            <div class="why-us-item">
+                <h3>✅ ضمان الجودة</h3>
+                <p>إذا لم تكن راضٍ عن المنتج، نستبدله مجاناً</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <!-- الصفحة الرئيسية -->
+        <div id="mainPage" class="page active">
+            <div class="welcome-section">
+                <h1>أطيب الفواكه الطازجة</h1>
+                <p>اطلب الآن واستمتع بأجود أنواع الفواكه الطبيعية</p>
+            </div>
+            <div class="promo-section">
+                <h3>🎉 عرض خاص!</h3>
+                <p>خصم 10% عند طلب أكثر من 3 كيلو من أي فاكهة</p>
+            </div>
+            <div class="fruit-table-container">
+                <table class="fruit-table">
+                    <thead>
+                        <tr>
+                            <th>الفاكهة</th>
+                            <th>السعر (جنيه)</th>
+                            <th>الكمية</th>
+                            <th>المجموع</th>
+                            <th>التحكم</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fruitTableBody">
+                        <!-- سيتم إنشاء المحتوى ديناميكياً من Google Sheets -->
+                    </tbody>
+                </table>
+                <div class="total-section">
+                    <div class="total-amount" id="totalAmount">المجموع: 0 جنيه</div>
+                    <p>الكمية الإجمالية: <span id="totalWeight">0 كجم</span></p>
+                    <p id="discountText" style="display: none; color: #FFD700; font-weight: bold;">🎉 تم تطبيق خصم 10%!</p>
+                </div>
+                <button class="order-btn" onclick="goToOrderSummary()">
+                    🛒 طلب الآن
+                </button>
+            </div>
+        </div>
+        <!-- صفحة ملخص الطلب -->
+        <div id="orderSummaryPage" class="page">
+            <button class="back-btn" onclick="goToMainPage()">← العودة للصفحة الرئيسية</button>
+            <div class="welcome-section">
+                <h1>ملخص طلبك</h1>
+                <p>راجع طلبك قبل التأكيد</p>
+            </div>
+            <div class="fruit-table-container" id="orderSummaryContainer">
+                <!-- سيتم إنشاء المحتوى هنا بواسطة JavaScript -->
+            </div>
+        </div>
+        <!-- صفحة بيانات العميل -->
+        <div id="customerDataPage" class="page">
+            <button class="back-btn" onclick="goToMainPage()">← العودة للصفحة الرئيسية</button>
+            <div class="welcome-section">
+                <h1>بيانات العميل</h1>
+                <p>أدخل بياناتك لتسهيل عملية التوصيل</p>
+            </div>
+            <div class="customer-form">
+                <form id="customerForm" onsubmit="saveCustomerData(event)">
+                    <div class="form-group">
+                        <label for="customerName">الاسم الكامل:</label>
+                        <input type="text" id="customerName" name="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">رقم الهاتف:</label>
+                        <input type="tel" id="customerPhone" name="customerPhone" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="buildingNumber">رقم العمارة:</label>
+                            <input type="text" id="buildingNumber" name="buildingNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apartmentNumber">رقم الشقة:</label>
+                            <input type="text" id="apartmentNumber" name="apartmentNumber" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="save-btn">
+                        💾 حفظ البيانات
+                    </button>
+                </form>
+                <div id="successMessage" class="success-message" style="display: none;">
+                    ✅ تم حفظ البيانات بنجاح!
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Google Sheets API configuration (لقراءة بيانات الفواكه فقط)
+        const apiKey = 'AIzaSyBh82Bqe-FfnZdzjGSVwmrpdKiURhhHaZ4';
+        const sheetId = '1Vn9sSmLbbMvZ9lJO1HxhuU4v1Sjs7Hs7jOlZT2c-9ms';
+        const readSheetName = 'veg'; // Sheet to read fruits data from
+        const writeSheetName = 'vegO'; // Sheet to write orders to
+        const readEndpoint = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/'${readSheetName}'!A1:D1000?alt=json&key=${apiKey}`;
+
+        // قاعدة بيانات محلية باستخدام localStorage
+        const customerDatabase = {
+            save: function(customerData) {
+                const dataToSave = {
+                    name: customerData.name,
+                    phone: customerData.phone,
+                    building: customerData.building,
+                    apartment: customerData.apartment,
+                    savedAt: new Date().toISOString()
+                };
+                localStorage.setItem('freshFruitsCustomerData', JSON.stringify(dataToSave));
+                console.log('تم حفظ بيانات العميل في localStorage:', dataToSave);
+                return true;
+            },
+            load: function() {
+                const savedData = localStorage.getItem('freshFruitsCustomerData');
+                if (savedData) {
+                    try {
+                        const parsed = JSON.parse(savedData);
+                        console.log('تم استرجاع بيانات العميل من localStorage:', parsed);
+                        return parsed;a
+                    } catch (e) {
+                        console.error('خطأ في قراءة البيانات من localStorage:', e);
+                        return null;
+                    }
+                }
+                console.log('لا توجد بيانات محفوظة في localStorage');
+                return null;
+            },
+            clear: function() {
+                localStorage.removeItem('freshFruitsCustomerData');
+                console.log('تم حذف بيانات العميل من localStorage');
+            },
+            exists: function() {
+                return this.load() !== null;
+            }
+        };
+
+        // متغير العميل الحالي
+        let customerData = null;
+        // متغيرات ديناميكية للفواكه
+        let fruitsData = {};
+        let quantities = {};
+        let prices = {};
+
+        // دالة لإرسال الطلب إلى Google Sheets عبر Google Apps Script
+   // دالة لإرسال الطلب إلى Google Sheets عبر Google Apps Script
+async function sendOrderToGoogleSheets(orderData) {
+    // 🔗 لينك الـ Web App
+    const webhookUrl = 'https://script.google.com/macros/s/AKfycbwluW7nsW2DNrhOr5jLGOv6MMjMUUP7XJhsCYWO1YjUyHO7VY4mgH1OKVuBfiAndylxLg/exec';
+
+    // البيانات اللي هتتبعت
+    const payload = {
+        sheetName: 'vegO',
+        values: [orderData]
+    };
+
+    try {
+        const res = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                data: encodeURIComponent(JSON.stringify(payload))
+            })
+        });
+
+        const result = await res.json();
+        console.log("📥 Google Sheets Response:", result);
+
+        if (result.success) {
+            console.log("✅ Order submitted to Google Sheets via fetch");
+
+            // 🟢 Reset الكميات بعد الإرسال
+            resetFruitQuantities();
+
+            alert("✅ تم إرسال الطلب بنجاح، وتمت تصفير الكميات");
+        } else {
+            alert("⚠️ فشل الإرسال: " + (result.error || result.message));
+        }
+
+    } catch (err) {
+        console.error("❌ فشل الإرسال:", err);
+        alert("❌ حصل خطأ أثناء إرسال الطلب");
+    }
+}
+
+function resetFruitQuantities() {
+    // الكمية بتتعرض بالشكل: "1.5 كجم"
+    document.querySelectorAll('td:nth-child(3)').forEach(el => {
+        if (el.textContent.includes("كجم")) {
+            el.textContent = "0 كجم";
+        }
+    });
+
+    // ولو المجموع كمان محتاج يتصفّر
+    document.querySelectorAll('td:nth-child(4)').forEach(el => {
+        if (el.textContent.includes("جنيه")) {
+            el.textContent = "0 جنيه";
+        }
+    });
+
+    console.log("🟢 تم تصفير كل الكميات و المبالغ");
+}
+
+
+
+ 
+ // وظيفة لجلب البيانات من Google Sheets (للفواكه فقط)
+   // وظيفة لجلب البيانات من Google Sheets (للفواكه فقط)
+    async function fetchFruitsData() {
+        try {
+            console.log('جاري تحميل بيانات الفواكه من Google Sheets...');
+            const response = await fetch(readEndpoint); // Use readEndpoint here
+            const data = await response.json();
+            if (data.values && data.values.length > 1) {
+                fruitsData = {};
+                quantities = {};
+                prices = {};
+                for (let i = 1; i < data.values.length; i++) {
+                    const row = data.values[i];
+                    if (row.length >= 4) {
+                        const fruitId = row[0]?.toLowerCase().replace(/\s+/g, '_') || `fruit_${i}`;
+                        const fruitName = row[1] || 'فاكهة غير محددة';
+                        const fruitEmoji = row[2] || '🍎';
+                        const fruitPrice = parseFloat(row[3]) || 0;
+                        fruitsData[fruitId] = {
+                            id: fruitId,
+                            name: fruitName,
+                            emoji: fruitEmoji,
+                            price: fruitPrice
+                        };
+                        quantities[fruitId] = 0;
+                        prices[fruitId] = fruitPrice;
+                    }
+                }
+                console.log('تم تحميل بيانات الفواكه بنجاح:', fruitsData);
+                createFruitsTable();
+                updateTotal();
+            } else {
+                console.error('لا توجد بيانات في الجدول');
+                showDefaultFruits();
+            }
+        } catch (error) {
+            console.error('خطأ في جلب البيانات:', error);
+            showDefaultFruits();
+        }
+    }
+
+
+        // وظيفة افتراضية عند فشل الاتصال
+        function showDefaultFruits() {
+            fruitsData = {
+                apple: { id: 'apple', name: 'تفاح أحمر', emoji: '🍎', price: 30 },
+                banana: { id: 'banana', name: 'موز', emoji: '🍌', price: 20 },
+                grapes: { id: 'grapes', name: 'عنب', emoji: '🍇', price: 40 },
+                orange: { id: 'orange', name: 'برتقال', emoji: '🍊', price: 25 },
+                mango: { id: 'mango', name: 'مانجو', emoji: '🥭', price: 50 }
+            };
+            quantities = { apple: 0, banana: 0, grapes: 0, orange: 0, mango: 0 };
+            prices = { apple: 30, banana: 20, grapes: 40, orange: 25, mango: 50 };
+            createFruitsTable();
+            updateTotal();
+        }
+
+        // إنشاء جدول الفواكه
+        function createFruitsTable() {
+            const tableBody = document.getElementById('fruitTableBody');
+            tableBody.innerHTML = '';
+            Object.values(fruitsData).forEach(fruit => {
+                const row = document.createElement('tr');
+                row.dataset.fruit = fruit.id;
+                row.dataset.price = fruit.price;
+                row.innerHTML = `
+                    <td>
+                        <div class="fruit-item">
+                            <span class="fruit-emoji">${fruit.emoji}</span>
+                            <span>${fruit.name}</span>
+                        </div>
+                    </td>
+                    <td><span class="price">${fruit.price} / كيلو</span></td>
+                    <td><span class="quantity-display">0 كجم</span></td>
+                    <td><span class="subtotal-display">0 جنيه</span></td>
+                    <td>
+                        <div class="quantity-controls">
+                            <button class="qty-btn plus" onclick="increaseQuantity(this)">+</button>
+                            <button class="qty-btn minus" onclick="decreaseQuantity(this)">-</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            console.log('تم إنشاء جدول الفواكه بنجاح');
+        }
+
+        function increaseQuantity(button) {
+            const row = button.closest('tr');
+            const fruit = row.dataset.fruit;
+            quantities[fruit] += 0.5;
+            updateDisplay(row, fruit);
+            updateTotal();
+        }
+
+        function decreaseQuantity(button) {
+            const row = button.closest('tr');
+            const fruit = row.dataset.fruit;
+            if (quantities[fruit] > 0) {
+                quantities[fruit] -= 0.5;
+                if (quantities[fruit] < 0) quantities[fruit] = 0;
+                updateDisplay(row, fruit);
+                updateTotal();
+            }
+        }
+
+        function updateDisplay(row, fruit) {
+            const quantityDisplay = row.querySelector('.quantity-display');
+            const subtotalDisplay = row.querySelector('.subtotal-display');
+            const subtotal = quantities[fruit] * prices[fruit];
+            quantityDisplay.textContent = quantities[fruit] + ' كجم';
+            subtotalDisplay.textContent = subtotal.toFixed(1) + ' جنيه';
+        }
+
+        function updateTotal() {
+            let total = 0;
+            let totalWeight = 0;
+            for (let fruit in quantities) {
+                total += quantities[fruit] * prices[fruit];
+                totalWeight += quantities[fruit];
+            }
+            let discountApplied = totalWeight > 3;
+            if (discountApplied) total *= 0.9;
+            document.getElementById('totalAmount').textContent = 'المجموع: ' + total.toFixed(1) + ' جنيه';
+            document.getElementById('totalWeight').textContent = totalWeight.toFixed(1) + ' كجم';
+            document.getElementById('discountText').style.display = discountApplied ? 'block' : 'none';
+        }
+
+        function goToOrderSummary() {
+            let hasItems = false;
+            for (let fruit in quantities) {
+                if (quantities[fruit] > 0) {
+                    hasItems = true;
+                    break;
+                }
+            }
+            if (!hasItems) {
+                alert('يرجى اختيار على الأقل فاكهة واحدة!');
+                return;
+            }
+            document.getElementById('mainPage').classList.remove('active');
+            document.getElementById('orderSummaryPage').classList.add('active');
+            createOrderSummary();
+        }
+
+        function goToMainPage() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('mainPage').classList.add('active');
+        }
+
+        function createOrderSummary() {
+            const container = document.getElementById('orderSummaryContainer');
+            let total = 0;
+            let totalWeight = 0;
+            let orderItems = [];
+
+            for (let fruitId in quantities) {
+                if (quantities[fruitId] > 0 && fruitsData[fruitId]) {
+                    const fruit = fruitsData[fruitId];
+                    const subtotal = quantities[fruitId] * fruit.price;
+                    total += subtotal;
+                    totalWeight += quantities[fruitId];
+                    orderItems.push({
+                        name: `${fruit.emoji} ${fruit.name}`,
+                        quantity: quantities[fruitId],
+                        subtotal: subtotal
+                    });
+                }
+            }
+
+            let discountApplied = totalWeight > 3;
+            let finalTotal = discountApplied ? total * 0.9 : total;
+
+            if (orderItems.length === 0) {
+                container.innerHTML = '<div class="empty-cart">🛒 السلة فارغة</div>';
+                return;
+            }
+
+            let html = `
+                <table class="order-summary-table">
+                    <thead>
+                        <tr>
+                            <th>الفاكهة</th>
+                            <th>الكمية</th>
+                            <th>المجموع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            orderItems.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity} كجم</td>
+                        <td>${item.subtotal.toFixed(1)} جنيه</td>
+                    </tr>
+                `;
+            });
+            html += `
+                    </tbody>
+                </table>
+                <div class="total-section">
+                    <div class="total-amount">المجموع النهائي: ${finalTotal.toFixed(1)} جنيه</div>
+                    <p>إجمالي الوزن: ${totalWeight.toFixed(1)} كجم</p>
+            `;
+            if (discountApplied) {
+                html += `<p style="color: #FFD700; font-weight: bold;">🎉 تم تطبيق خصم 10%!</p>`;
+            }
+            html += `
+                </div>
+                <button class="confirm-order-btn" onclick="confirmOrder()">
+                    ✅ تأكيد الطلب
+                </button>
+            `;
+            container.innerHTML = html;
+        }
+
+        function confirmOrder() {
+            const savedCustomerData = customerDatabase.load();
+            if (!savedCustomerData || !savedCustomerData.name || !savedCustomerData.phone || !savedCustomerData.building || !savedCustomerData.apartment) {
+                if (confirm('لم يتم حفظ بيانات العميل بعد. هل تريد إدخالها الآن؟')) {
+                    showCustomerData();
+                    return;
+                } else {
+                    alert('يجب حفظ بيانات العميل لتأكيد الطلب.');
+                    return;
+                }
+            }
+
+            customerData = savedCustomerData;
+
+            let total = 0;
+            let totalWeight = 0;
+            let orderItems = [];
+            for (let fruitId in quantities) {
+                if (quantities[fruitId] > 0 && fruitsData[fruitId]) {
+                    const fruit = fruitsData[fruitId];
+                    const subtotal = quantities[fruitId] * fruit.price;
+                    total += subtotal;
+                    totalWeight += quantities[fruitId];
+                    orderItems.push(`${fruit.emoji} ${fruit.name} (${quantities[fruitId]} كجم)`);
+                }
+            }
+
+            const discountApplied = totalWeight > 3;
+            const finalTotal = discountApplied ? total * 0.9 : total;
+
+            // رسالة واتساب
+            let orderText = `*طلب جديد من متجر الفواكه الطازجة*%0A%0A`;
+            orderText += `*العميل:* ${savedCustomerData.name}%0A`;
+            orderText += `*الهاتف:* ${savedCustomerData.phone}%0A`;
+            orderText += `*العنوان:* عمارة ${savedCustomerData.building} - شقة ${savedCustomerData.apartment}%0A%0A`;
+            orderText += `*تفاصيل الطلب:*%0A`;
+
+            for (let fruitId in quantities) {
+                if (quantities[fruitId] > 0 && fruitsData[fruitId]) {
+                    const fruit = fruitsData[fruitId];
+                    const subtotal = quantities[fruitId] * fruit.price;
+                    orderText += `• ${fruit.emoji} ${fruit.name}: ${quantities[fruitId]} كجم = ${subtotal.toFixed(1)} جنيه%0A`;
+                }
+            }
+
+            orderText += `%0A*الإجمالي:* ${total.toFixed(1)} جنيه`;
+            if (discountApplied) {
+                orderText += `%0A*بعد الخصم (10%):* ${finalTotal.toFixed(1)} جنيه ✅`;
+            } else {
+                orderText += `%0A*النهائي:* ${finalTotal.toFixed(1)} جنيه`;
+            }
+            orderText += `%0A%0Aشكرًا على طلبك! سيتم التوصيل في أسرع وقت.`;
+
+            // رابط واتساب
+            const whatsappURL = `https://api.whatsapp.com/send?phone=201018688494&text=${orderText}`;
+
+            // إنشاء صف البيانات لجوجل شيتس
+            const orderRow = [
+                new Date().toLocaleString('ar-EG'),
+                savedCustomerData.name,
+                savedCustomerData.phone,
+                savedCustomerData.building,
+                savedCustomerData.apartment,
+                orderItems.join(' + '),
+                totalWeight.toFixed(1),
+                total.toFixed(1),
+                discountApplied ? 'نعم' : 'لا',
+                finalTotal.toFixed(1)
+            ];
+
+            if (confirm('هل أنت متأكد من تأكيد هذا الطلب؟')) {
+                // أولًا: إرسال إلى جوجل شيتس
+                sendOrderToGoogleSheets(orderRow).then(success => {
+                    // ثانيًا: فتح واتساب
+                    window.open(whatsappURL, '_blank');
+
+                    // إعادة تعيين السلة
+                    for (let fruit in quantities) {
+                        quantities[fruit] = 0;
+                    }
+                    updateTotal();
+
+                    // العودة للصفحة الرئيسية
+                    setTimeout(() => {
+                        goToMainPage();
+                    }, 1000);
+                });
+            }
+        }
+
+        function showOrders() {
+            goToOrderSummary();
+        }
+
+        function showCustomerData() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('customerDataPage').classList.add('active');
+            loadCustomerDataFromDatabase();
+        }
+
+        function loadCustomerDataFromDatabase() {
+            const savedData = customerDatabase.load();
+            if (savedData) {
+                customerData = savedData;
+                document.getElementById('customerName').value = savedData.name || '';
+                document.getElementById('customerPhone').value = savedData.phone || '';
+                document.getElementById('buildingNumber').value = savedData.building || '';
+                document.getElementById('apartmentNumber').value = savedData.apartment || '';
+            } else {
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('buildingNumber').value = '';
+                document.getElementById('apartmentNumber').value = '';
+            }
+        }
+
+        function saveCustomerData(event) {
+            event.preventDefault();
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const building = document.getElementById('buildingNumber').value.trim();
+            const apartment = document.getElementById('apartmentNumber').value.trim();
+
+            if (name && phone && building && apartment) {
+                const newCustomerData = { name, phone, building, apartment };
+                const saved = customerDatabase.save(newCustomerData);
+                if (saved) {
+                    customerData = newCustomerData;
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block';
+                    setTimeout(() => successMessage.style.display = 'none', 3000);
+                } else {
+                    alert('حدث خطأ في الحفظ');
+                }
+            } else {
+                alert('املأ جميع الحقول');
+            }
+        }
+
+        function showWhyUs() {
+            document.getElementById('whyUsModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeWhyUs() {
+            document.getElementById('whyUsModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('whyUsModal');
+            if (event.target === modal) {
+                closeWhyUs();
+            }
+        };
+
+        window.onload = function() {
+            fetchFruitsData();
+            const savedData = customerDatabase.load();
+            if (savedData) customerData = savedData;
+        };
+    </script>
+</body>
+</html>
